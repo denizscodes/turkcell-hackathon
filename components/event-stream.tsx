@@ -1,39 +1,47 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Clock, User, Zap } from "lucide-react"
-
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Clock, User, Zap } from "lucide-react";
+import { useCallback } from "react";
 interface Event {
-  _id: string
-  userId: string
-  eventType: string
-  status: string
-  timestamp: string
-  matchedRules: any[]
-  metadata?: any
+  _id: string;
+  userId: string;
+  eventType: string;
+  status: string;
+  timestamp: string;
+  matchedRules: any[];
+  metadata?: any;
 }
 
 export function EventStream() {
-  const [events, setEvents] = useState<Event[]>([])
-
-  useEffect(() => {
-    fetchEvents()
-    const interval = setInterval(fetchEvents, 3000)
-    return () => clearInterval(interval)
-  }, [])
+  const [events, setEvents] = useState<Event[]>([]);
 
   async function fetchEvents() {
     try {
-      const response = await fetch("http://localhost:3001/api/events")
-      const data = await response.json()
-      setEvents(data)
+      const response = await fetch("http://localhost:3001/api/events");
+      const data = await response.json();
+
+      // Gelen verinin dizi olup olmadığını kontrol et
+      if (Array.isArray(data)) {
+        setEvents(data);
+      } else {
+        console.error("Events verisi dizi değil:", data);
+        setEvents([]); // Hata gelirse boş dizi set et ki .map patlamasın
+      }
     } catch (error) {
-      console.error("[v0] Error fetching events:", error)
+      console.error("[v0] Error fetching events:", error);
+      setEvents([]);
     }
   }
+
+  useEffect(() => {
+    fetchEvents();
+    const interval = setInterval(fetchEvents, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Card className="border-border">
@@ -43,7 +51,10 @@ export function EventStream() {
             <Zap className="w-5 h-5 text-primary" />
             Real-time Event Stream
           </CardTitle>
-          <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20">
+          <Badge
+            variant="outline"
+            className="bg-accent/10 text-accent border-accent/20"
+          >
             Live
           </Badge>
         </div>
@@ -77,15 +88,23 @@ export function EventStream() {
 
                   <div className="flex items-center gap-2 text-sm mb-2">
                     <User className="w-4 h-4 text-muted-foreground" />
-                    <span className="font-mono text-muted-foreground">{event.userId}</span>
+                    <span className="font-mono text-muted-foreground">
+                      {event.userId}
+                    </span>
                   </div>
 
                   {event.matchedRules?.length > 0 && (
                     <div className="mt-3 pt-3 border-t border-border">
-                      <p className="text-xs text-muted-foreground mb-2">Matched Rules:</p>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Matched Rules:
+                      </p>
                       <div className="flex flex-wrap gap-1">
                         {event.matchedRules.map((rule: any, idx: number) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
+                          <Badge
+                            key={idx}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {rule.ruleName}
                           </Badge>
                         ))}
@@ -112,21 +131,37 @@ export function EventStream() {
         </ScrollArea>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const variants: Record<string, { bg: string; text: string; label: string }> = {
-    processed: { bg: "bg-accent/10", text: "text-accent", label: "Processed" },
-    pending: { bg: "bg-yellow-500/10", text: "text-yellow-500", label: "Pending" },
-    failed: { bg: "bg-destructive/10", text: "text-destructive", label: "Failed" },
-  }
+  const variants: Record<string, { bg: string; text: string; label: string }> =
+    {
+      processed: {
+        bg: "bg-accent/10",
+        text: "text-accent",
+        label: "Processed",
+      },
+      pending: {
+        bg: "bg-yellow-500/10",
+        text: "text-yellow-500",
+        label: "Pending",
+      },
+      failed: {
+        bg: "bg-destructive/10",
+        text: "text-destructive",
+        label: "Failed",
+      },
+    };
 
-  const variant = variants[status] || variants.pending
+  const variant = variants[status] || variants.pending;
 
   return (
-    <Badge variant="outline" className={`${variant.bg} ${variant.text} border-transparent text-xs`}>
+    <Badge
+      variant="outline"
+      className={`${variant.bg} ${variant.text} border-transparent text-xs`}
+    >
       {variant.label}
     </Badge>
-  )
+  );
 }
