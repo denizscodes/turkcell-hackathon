@@ -1,5 +1,6 @@
-import { Activity, Code2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Activity, Code2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function DashboardHeader() {
   return (
@@ -8,11 +9,13 @@ export function DashboardHeader() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg">
-              <Activity className="w-6 h-6 text-primary-foreground" />
+              <Image src="/tr.png" alt="Logo" width={50} height={50} />
             </div>
             <div>
               <h1 className="text-xl font-bold">Turkcell Decision Engine</h1>
-              <p className="text-sm text-muted-foreground">Microservice Architecture</p>
+              <p className="text-sm text-muted-foreground">
+                Microservice Architecture
+              </p>
             </div>
           </div>
 
@@ -31,7 +34,7 @@ export function DashboardHeader() {
         </div>
       </div>
     </header>
-  )
+  );
 }
 
 function ServiceStatus({ service, port }: { service: string; port: string }) {
@@ -41,5 +44,5 @@ function ServiceStatus({ service, port }: { service: string; port: string }) {
       <span className="text-xs font-medium">{service}</span>
       <span className="text-xs text-muted-foreground">:{port}</span>
     </div>
-  )
+  );
 }
