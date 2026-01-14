@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Clock, User, Zap } from "lucide-react"
-
+import { useCallback } from "react"
 interface Event {
   _id: string
   userId: string
@@ -19,22 +19,30 @@ interface Event {
 export function EventStream() {
   const [events, setEvents] = useState<Event[]>([])
 
+  async function fetchEvents() {
+    try {
+      const response = await fetch("http://localhost:3001/api/events")
+      const data = await response.json()
+      
+      // Gelen verinin dizi olup olmadığını kontrol et
+      if (Array.isArray(data)) {
+        setEvents(data)
+      } else {
+        console.error("Events verisi dizi değil:", data)
+        setEvents([]) // Hata gelirse boş dizi set et ki .map patlamasın
+      }
+    } catch (error) {
+      console.error("[v0] Error fetching events:", error)
+      setEvents([])
+    }
+  }
+
   useEffect(() => {
     fetchEvents()
     const interval = setInterval(fetchEvents, 3000)
     return () => clearInterval(interval)
   }, [])
-
-  async function fetchEvents() {
-    try {
-      const response = await fetch("http://localhost:3001/api/events")
-      const data = await response.json()
-      setEvents(data)
-    } catch (error) {
-      console.error("[v0] Error fetching events:", error)
-    }
-  }
-
+  
   return (
     <Card className="border-border">
       <CardHeader>
