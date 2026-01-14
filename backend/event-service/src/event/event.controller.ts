@@ -1,32 +1,19 @@
-import { Controller, Get, Post, Body, Param } from "@nestjs/common"
-import type { EventService } from "./event.service"
+// event.controller.ts
+import { Controller, Get, Post, Body } from "@nestjs/common";
+import { EventService } from "./event.service";
+import { Event } from "./event.dto";
 
-@Controller("events")
+@Controller("events") // This decorator is REQUIRED
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Post()
-  create(@Body() createEventDto: any) {
-    return this.eventService.create(createEventDto);
-  }
-
   @Get()
   findAll() {
-    return this.eventService.findAll()
+    return this.eventService.findAll();
   }
 
-  @Get("stats")
-  getStats() {
-    return this.eventService.getStats()
-  }
-
-  @Get('user/:userId')
-  findByUserId(@Param('userId') userId: string) {
-    return this.eventService.findByUserId(userId);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventService.findById(id);
+  @Post()
+  create(@Body() event: Event) {
+    return this.eventService.create(event);
   }
 }
