@@ -4,5 +4,9 @@ export declare class EventController {
     private readonly eventService;
     constructor(eventService: EventService);
     findAll(): Event[];
+    getStats(): {
+        total: number;
+        timestamp: string;
+    };
     create(event: Event): Event;
 }

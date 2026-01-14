@@ -22,6 +22,13 @@ let EventController = class EventController {
     findAll() {
         return this.eventService.findAll();
     }
+    getStats() {
+        const allEvents = this.eventService.findAll();
+        return {
+            total: allEvents.length,
+            timestamp: new Date().toISOString(),
+        };
+    }
     create(event) {
         return this.eventService.create(event);
     }
@@ -33,6 +40,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], EventController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("stats"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], EventController.prototype, "getStats", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
