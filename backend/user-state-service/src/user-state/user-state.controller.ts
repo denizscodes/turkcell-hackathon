@@ -1,27 +1,28 @@
-import { Controller, Get, Post, Body } from "@nestjs/common"
-import type { UserStateService } from "./user-state.service"
+import { Controller, Get, Post, Body, Param } from "@nestjs/common";
+import { UserStateService } from "./user-state.service";
 
 @Controller("user-state")
 export class UserStateController {
   constructor(private readonly userStateService: UserStateService) {}
 
   @Get()
-  findAll() {
-    return this.userStateService.findAll()
+  // Dönüş tipini 'any' veya servisteki gerçek tip neyse ona zorla
+  findAll(): Promise<any> {
+    return this.userStateService.findAll();
   }
 
   @Get("stats")
-  getStats() {
-    return this.userStateService.getStats()
+  getStats(): Promise<any> {
+    return this.userStateService.getStats();
   }
 
   @Get(":userId")
-  findByUserId(userId: string) {
-    return this.userStateService.findByUserId(userId)
+  findByUserId(@Param("userId") userId: string): Promise<any> {
+    return this.userStateService.findByUserId(userId);
   }
 
-  @Post('update')
-  updateState(@Body() body: { userId: string; ruleResult: any }) {
+  @Post("update")
+  updateState(@Body() body: { userId: string; ruleResult: any }): Promise<any> {
     return this.userStateService.updateState(body.userId, body.ruleResult);
   }
 }
