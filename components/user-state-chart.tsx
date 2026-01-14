@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users } from "lucide-react"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts"
-
+import { useCallback } from "react"
 interface StateDistribution {
   state: string
   count: number
@@ -16,13 +16,8 @@ const COLORS = ["hsl(250, 100%, 65%)", "hsl(173, 80%, 50%)", "hsl(45, 100%, 60%)
 export function UserStateChart() {
   const [data, setData] = useState<StateDistribution[]>([])
 
-  useEffect(() => {
-    fetchUserStates()
-    const interval = setInterval(fetchUserStates, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
-  async function fetchUserStates() {
+  // fetchUserStates fonksiyonunu useCallback içine alıyoruz (Sonsuz döngü koruması)
+  const fetchUserStates = useCallback(async () => {
     try {
       const response = await fetch("http://localhost:3003/api/user-state/stats")
       const stats = await response.json()
@@ -30,7 +25,13 @@ export function UserStateChart() {
     } catch (error) {
       console.error("[v0] Error fetching user states:", error)
     }
-  }
+  }, []) // Boş bağımlılık
+
+  useEffect(() => {
+    fetchUserStates()
+    const interval = setInterval(fetchUserStates, 10000) // 5 saniye yerine 10 saniye yapıldı
+    return () => clearInterval(interval) // Temizlik (ÖNEMLİ)
+  }, [fetchUserStates])
 
   return (
     <Card className="border-border">

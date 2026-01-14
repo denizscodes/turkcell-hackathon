@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Activity, Zap, Users, CheckCircle } from "lucide-react"
-
+import { useCallback } from "react"
 interface Stats {
   totalEvents: number
   processedEvents: number
@@ -19,14 +19,9 @@ export function StatsGrid() {
     totalUsers: 0,
   })
 
-  useEffect(() => {
-    fetchStats()
-    const interval = setInterval(fetchStats, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
-  async function fetchStats() {
+const fetchStats = useCallback(async () => {
     try {
+      // 3 farklı fetch isteği aynı anda atılıyor
       const [eventStats, ruleStats, userStats] = await Promise.all([
         fetch("http://localhost:3001/api/events/stats").then((r) => r.json()),
         fetch("http://localhost:3002/api/rules/stats").then((r) => r.json()),
@@ -42,7 +37,13 @@ export function StatsGrid() {
     } catch (error) {
       console.error("[v0] Error fetching stats:", error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchStats()
+    const interval = setInterval(fetchStats, 15000) // 15 saniyede bir güncellensin
+    return () => clearInterval(interval)
+  }, [fetchStats])
 
   const statCards = [
     {
