@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common"
 import type { HttpService } from "@nestjs/axios"
 import { firstValueFrom } from "rxjs"
 import { supabase } from "../lib/supabase"
+import type { ConfigService } from "../config/config.service"
 
 interface Event {
   id?: string
@@ -15,7 +16,10 @@ interface Event {
 
 @Injectable()
 export class EventService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async create(createEventDto: any): Promise<Event> {
     console.log("[v0] Creating new event:", createEventDto)
@@ -85,7 +89,7 @@ export class EventService {
 
   private async processEventWithRuleEngine(event: Event) {
     try {
-      const ruleEngineUrl = process.env.RULE_ENGINE_URL || "http://localhost:3002"
+      const ruleEngineUrl = this.configService.ruleEngineUrl
       const response = await firstValueFrom(
         this.httpService.post(`${ruleEngineUrl}/api/rules/evaluate`, {
           userId: event.user_id,
@@ -116,7 +120,7 @@ export class EventService {
 
   private async updateUserState(userId: string, ruleResult: any) {
     try {
-      const userStateUrl = process.env.USER_STATE_URL || "http://localhost:3003"
+      const userStateUrl = this.configService.userStateUrl
       await firstValueFrom(
         this.httpService.post(`${userStateUrl}/api/user-state/update`, {
           userId,

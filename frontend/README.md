@@ -20,37 +20,37 @@ Modern, real-time dashboard for monitoring and managing the Turkcell Decision En
 
 ## Installation
 
-```bash
+\`\`\`bash
 npm install
-```
+\`\`\`
 
 ## Environment Variables
 
 Create a `.env.local` file:
 
-```env
+\`\`\`env
 NEXT_PUBLIC_EVENT_SERVICE_URL=http://localhost:3001
 NEXT_PUBLIC_RULE_ENGINE_URL=http://localhost:3002
 NEXT_PUBLIC_USER_STATE_URL=http://localhost:3003
-```
+\`\`\`
 
 ## Development
 
-```bash
+\`\`\`bash
 npm run dev
-```
+\`\`\`
 
 Dashboard will be available at http://localhost:3000
 
 ## Architecture
 
-```
+\`\`\`
 Dashboard (Next.js)
     ↓ HTTP Polling
 Event Service (3001) ← Real-time stats
 Rule Engine (3002) ← Rule CRUD
 User State (3003) ← State distribution
-```
+\`\`\`
 
 ## Components
 

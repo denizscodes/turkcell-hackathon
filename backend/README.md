@@ -31,20 +31,47 @@ Tüm servisler Supabase PostgreSQL'i paylaşır. Database tablolarını oluştur
 # scripts/002_seed_sample_rules.sql
 ```
 
-## Environment Variables
+## Configuration
 
-Her servis için `.env` dosyası oluşturun veya v0 Vars bölümünden ayarlayın:
+Her servis için `secret.json` dosyası oluşturun. `.example` dosyalarını kopyalayıp kullanabilirsiniz:
 
-```env
-SUPABASE_URL=your-supabase-url
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+### Event Service
+```bash
+cd backend/event-service
+cp secret.json.example secret.json
+# secret.json dosyasını Supabase bilgilerinizle düzenleyin
 ```
 
-Event Service için ek:
-```env
-RULE_ENGINE_URL=http://localhost:3002
-USER_STATE_URL=http://localhost:3003
+**secret.json örneği:**
+```json
+{
+  "supabase": {
+    "url": "your-supabase-url",
+    "serviceRoleKey": "your-service-role-key"
+  },
+  "services": {
+    "ruleEngineUrl": "http://localhost:3002",
+    "userStateUrl": "http://localhost:3003"
+  },
+  "server": {
+    "port": 3001
+  }
+}
 ```
+
+### Rule Engine Service
+```bash
+cd backend/rule-engine-service
+cp secret.json.example secret.json
+```
+
+### User State Service
+```bash
+cd backend/user-state-service
+cp secret.json.example secret.json
+```
+
+**Not:** `secret.json` dosyaları `.gitignore`'a eklenmiştir ve Git'e commit edilmez.
 
 ## Installation & Run
 
@@ -137,5 +164,14 @@ curl -X POST http://localhost:3002/api/rules \
 - **Framework**: NestJS 10.3
 - **Database**: Supabase PostgreSQL
 - **Language**: TypeScript
+- **Configuration**: secret.json (JSON-based config)
 - **Communication**: REST API + Event Bus pattern
 - **Architecture**: Microservices
+```
+
+```text file=".gitignore"
+# ... existing code ...
+
+# Secrets
+**/secret.json
+!**/secret.json.example

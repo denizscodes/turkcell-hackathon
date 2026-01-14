@@ -4,14 +4,14 @@ Gerçek zamanlı event işleme ve kural motoru sistemi. Mikroservis mimarisi ile
 
 ## Proje Yapısı
 
-```
+\`\`\`
 .
 ├── backend/
 │   ├── event-service/         # Event Processing Microservice (Port 3001)
 │   ├── rule-engine-service/   # Rule Engine Microservice (Port 3002)
 │   └── user-state-service/    # User State Microservice (Port 3003)
 └── frontend/                  # Next.js Dashboard (Port 3000)
-```
+\`\`\`
 
 ## Teknolojiler
 
@@ -31,13 +31,13 @@ Gerçek zamanlı event işleme ve kural motoru sistemi. Mikroservis mimarisi ile
 
 ### 1. MongoDB Başlat
 
-```bash
+\`\`\`bash
 docker run -d -p 27017:27017 --name turkcell-mongo mongo:latest
-```
+\`\`\`
 
 ### 2. Backend Servisleri Başlat
 
-```bash
+\`\`\`bash
 # Event Service
 cd backend/event-service
 npm install
@@ -52,15 +52,15 @@ npm run start:dev
 cd backend/user-state-service
 npm install
 npm run start:dev
-```
+\`\`\`
 
 ### 3. Frontend Başlat
 
-```bash
+\`\`\`bash
 cd frontend
 npm install
 npm run dev
-```
+\`\`\`
 
 Dashboard: http://localhost:3000
 
@@ -68,21 +68,21 @@ Dashboard: http://localhost:3000
 
 Her servis için `.env` dosyası oluşturun:
 
-```env
+\`\`\`env
 MONGODB_URI=mongodb://localhost:27017/turkcell-decision-engine
-```
+\`\`\`
 
 Detaylı kurulum için `backend/README.md` dosyasına bakın.
 
 ## Mikroservis İletişimi
 
-```
+\`\`\`
 Event Service (3001)
     ↓ REST API
 Rule Engine Service (3002)
     ↓ REST API
 User State Service (3003)
-```
+\`\`\`
 
 1. Event Service event'i alır
 2. Rule Engine'e gönderir ve kuralları değerlendirir
